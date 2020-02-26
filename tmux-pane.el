@@ -94,8 +94,14 @@
 ;; end of namespace
 )
 
+(defun windmove-last ()
+  (interactive)
+  (other-window -1))
+
 (defvar tmux-pane-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-'")
+      (lambda () (interactive) (tmux-pane--windmove "last"  "tmux select-pane -l")))
     (define-key map (kbd "C-k")
       (lambda () (interactive) (tmux-pane--windmove "up"  "tmux select-pane -U")))
     (define-key map (kbd "C-j")
