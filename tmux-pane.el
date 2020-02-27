@@ -96,7 +96,7 @@
 
 (defun windmove-last ()
   (interactive)
-  (other-window -1))
+  (select-window (previous-window)))
 
 (defvar tmux-pane-mode-map
   (let ((map (make-sparse-keymap)))
