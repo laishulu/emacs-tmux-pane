@@ -96,7 +96,11 @@
 
 (defun windmove-last ()
   (interactive)
-  (select-window (previous-window)))
+  (let ((win (get-mru-window t t t)))
+    (unless win (error "Last window not found."))
+    (let ((frame (window-frame win)))
+      (select-frame-set-input-focus frame)
+      (select-window win))))
 
 (defvar tmux-pane-mode-map
   (let ((map (make-sparse-keymap)))
