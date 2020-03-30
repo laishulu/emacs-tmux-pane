@@ -22,11 +22,10 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;; This package provide integration between emacs window and tmux pane.
+;;; This package provide integration between Emacs window and tmux pane.
 ;;; For more information see the README in the github repo.
 
 ;;; Code:
-(require 's)
 
 ;; `define-namespace' is autoloaded, so there's no need to require
 ;; `names'. However, requiring it here means it will also work for
@@ -36,17 +35,18 @@
 (define-namespace tmux-pane-
 
 (defcustom vertical-percent 25
-  "horizontal percent of the vertical pane"
+  "Horizontal percent of the vertical pane."
   :type 'integer
   :group 'tmux-pane)
 
 (defcustom horizontal-percent 25
-  "horizontal percent of the horizontal pane"
+  "Horizontal percent of the horizontal pane."
   :type 'integer
   :group 'tmux-pane)
 
 :autoload
 (defun -windmove(dir tmux-cmd)
+  "Move focus to window according to DIR and TMUX-CMD."
   (interactive)
   (if (ignore-errors (funcall (intern (concat "windmove-" dir))))
       nil                       ; Moving within emacs
@@ -54,50 +54,57 @@
 
 :autoload
 (defun open-vertical ()
+  "Open a vertical pane."
   (interactive)
   (shell-command (format "tmux split-window -h -p %s" vertical-percent)))
 
 :autoload
 (defun open-horizontal ()
+  "Open a horizontal pane."
   (interactive)
   (shell-command (format "tmux split-window -v -p %s" horizontal-percent)))
 
 :autoload
 (defun close ()
+  "Close last pane."
   (interactive)
   (shell-command "tmux kill-pane -t {last}"))
 
 :autoload
 (defun rerun ()
+  "Rerun command in the last pane."
   (interactive)
   (shell-command "tmux send-keys -t {last} C-c")
   (shell-command "tmux send-keys -t {last} Up Enter"))
 
 :autoload
 (defun toggle-vertical()
+  "Toggle vertical pane."
   (interactive)
   ;; have more than one pane
   (if (< 1 (length
-            (s-lines (s-trim (shell-command-to-string "tmux list-panes")))))
+            (split-string (string-trim (shell-command-to-string "tmux list-panes")) "\n")))
       (close)
     (open-vertical)))
 
 :autoload
 (defun toggle-horizontal()
+  "Toggle horizontal pane."
   (interactive)
   ;; have more than one pane
   (if (< 1 (length
-            (s-lines (s-trim (shell-command-to-string "tmux list-panes")))))
+            (split-string (string-trim (shell-command-to-string "tmux list-panes")) "\n")))
       (close)
-    (open-horizontal)))
+(open-horizontal)))
 
 ;; end of namespace
 )
 
 (defun windmove-last ()
+  "Focus to the last Emacs window."
   (interactive)
   (let ((win (get-mru-window t t t)))
-    (unless win (error "Last window not found."))
+    (unless win (error "Last window not found"))
     (let ((frame (window-frame win)))
       (select-frame-set-input-focus frame)
       (select-window win))))
