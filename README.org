@@ -74,3 +74,22 @@ side pane to the whole tmux window
 
 ~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the horizontal
 side pane to the whole tmux window
+
+*  Example configuration for [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
+#+BEGIN_SRC lisp
+(use-package! tmux-pane
+  :config
+  (tmux-pane-mode)
+  (map! :leader
+        (:prefix ("v" . "vpane")
+          :desc "Open vpane" :nv "o" #'tmux-pane-open-vertical
+          :desc "Toggle vpane" :nv "v" #'tmux-pane-toggle-vertical
+          :desc "Open hpane" :nv "h" #'tmux-pane-open-horizontal
+          :desc "Open hpane" :nv "s" #'tmux-pane-open-horizontal
+          :desc "Close pane" :nv "c" #'tmux-pane-close
+          :desc "Rerun last command" :nv "r" #'tmux-pane-rerun))
+  (map! :leader
+        (:prefix "t"
+          :desc "vpane" :nv "v" #'tmux-pane-toggle-vertical
+          :desc "hpane" :nv "h" #'tmux-pane-toggle-horizontal)))
+#+END_SRC
