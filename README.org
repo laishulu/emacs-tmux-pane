@@ -70,8 +70,6 @@ The following two variable can be customized
   side pane to the whole tmux window
 - ~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the
   horizontal side pane to the whole tmux window
-- ~tmux-pane-map-evil-insert-state~ (Default: t): Map keybindings in evil insert
-  state to enable window navigation.
 
 *  Example configuration for [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
 #+BEGIN_SRC lisp
