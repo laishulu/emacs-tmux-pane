@@ -46,13 +46,22 @@
   :type 'integer
   :group 'tmux-pane)
 
+(defvar before-leave-hook nil
+  "Hook to run before leaving emacs to tmux.")
+
+(defvar after-leave-hook nil
+  "Hook to run after leaving emacs to tmux.")
+
 :autoload
 (defun -windmove(dir tmux-cmd)
   "Move focus to window according to DIR and TMUX-CMD."
   (interactive)
   (if (ignore-errors (funcall (intern (concat "windmove-" dir))))
       nil                       ; Moving within emacs
-    (shell-command tmux-cmd)))  ; At edges, send command to tmux
+    ;; At edges, send command to tmux
+    (run-hooks 'tmux-pance-before-leave-hook)
+    (shell-command tmux-cmd)
+    (run-hooks 'tmux-pance-after-leave-hook)))
 
 :autoload
 (defun open-vertical ()

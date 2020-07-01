@@ -71,6 +71,12 @@ The following two variable can be customized
 - ~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the
   horizontal side pane to the whole tmux window
 
+*** Hooks
+- ~tmux-pane-before-leave-hook~ (Default: 25): Hook to run before leaving emacs
+  to tmux.
+- ~tmux-pane-before-leave-hook~ (Default: 25): Hook to run after leaving emacs
+  to tmux.
+
 *  Example configuration for [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
 #+BEGIN_SRC lisp
 (use-package! tmux-pane
