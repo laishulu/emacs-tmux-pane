@@ -59,9 +59,9 @@
   (if (ignore-errors (funcall (intern (concat "windmove-" dir))))
       nil                       ; Moving within emacs
     ;; At edges, send command to tmux
-    (run-hooks 'tmux-pance-before-leave-hook)
+    (run-hooks 'tmux-pane-before-leave-hook)
     (shell-command tmux-cmd)
-    (run-hooks 'tmux-pance-after-leave-hook)))
+    (run-hooks 'tmux-pane-after-leave-hook)))
 
 :autoload
 (defun open-vertical ()
