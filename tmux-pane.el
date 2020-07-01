@@ -45,6 +45,11 @@
   :type 'integer
   :group 'tmux-pane)
 
+(defcustom map-evil-insert-state t
+  "Map keybindings in evil insert state"
+  :type 'bool
+  :group 'tmux-pane)
+
 :autoload
 (defun -windmove(dir tmux-cmd)
   "Move focus to window according to DIR and TMUX-CMD."
@@ -98,6 +103,102 @@
       (close)
 (open-horizontal)))
 
+(defun omni-window-last ()
+  "Switch to the last window of Emacs or tmux"
+  (interactive)
+  (-windmove "last"  "tmux select-pane -l"))
+
+(defun omni-window-up ()
+  "Switch to the up window of Emacs or tmux"
+  (interactive)
+  (-windmove "up"  "tmux select-pane -U"))
+
+(defun omni-window-down ()
+  "Switch to the down window of Emacs or tmux"
+  (interactive)
+  (-windmove "down"  "tmux select-pane -D"))
+
+(defun omni-window-left ()
+  "Switch to the left window of Emacs or tmux"
+  (interactive)
+  (-windmove "left"  "tmux select-pane -L"))
+
+(defun omni-window-right ()
+  "Switch to the right window of Emacs or tmux"
+  (interactive)
+  (-windmove "right"  "tmux select-pane -R"))
+
+;; keymap defined by evil 
+(defvar ::evil-insert-state-map)
+
+(defvar -saved-evil-insert-state-map
+  (make-sparse-keymap)
+  "Keymap to keep bindings in original `evil-insert-state-map'")
+
+(defvar -evil-insert-state-map-overrided nil
+  "Already overrided `evil-insert-state-map'")
+
+(defun override-evil-insert-state-map ()
+  "Override `evil-insert-state-map' after saving original bindings."
+  (unless (and -evil-insert-state-map-overrided
+               (keymapp 'evil-insert-state-map))
+    (define-key -saved-evil-insert-state-map (kbd "C-\\")
+      (lookup-key evil-insert-state-map (kbd "C-\\")))
+    (define-key evil-insert-state-map (kbd "C-\\") #'omni-window-last)
+
+    (define-key -saved-evil-insert-state-map (kbd "C-k")
+      (lookup-key evil-insert-state-map (kbd "C-k")))
+    (define-key evil-insert-state-map (kbd "C-k") #'omni-window-up)
+
+    (define-key -saved-evil-insert-state-map (kbd "C-j")
+      (lookup-key evil-insert-state-map (kbd "C-j")))
+    (define-key evil-insert-state-map (kbd "C-j") #'omni-window-down)
+
+    (define-key -saved-evil-insert-state-map (kbd "C-h")
+      (lookup-key evil-insert-state-map (kbd "C-h")))
+    (define-key evil-insert-state-map (kbd "C-h") #'omni-window-left)
+
+    (define-key -saved-evil-insert-state-map (kbd "C-l")
+      (lookup-key evil-insert-state-map (kbd "C-l")))
+    (define-key evil-insert-state-map (kbd "C-l") #'omni-window-right)
+
+    (setq -evil-insert-state-map-overrided t)))
+
+(defun restore-evil-insert-state-map ()
+  "Restore original `evil-insert-state-map'."
+  (when (and -evil-insert-state-map-overrided
+             (keymapp 'evil-insert-state-map))
+    (define-key evil-insert-state-map (kbd "C-\\")
+      (lookup-key -saved-evil-insert-state-map (kbd "C-\\")))
+    (define-key evil-insert-state-map (kbd "C-k")
+      (lookup-key -saved-evil-insert-state-map (kbd "C-k")))
+    (define-key evil-insert-state-map (kbd "C-j")
+      (lookup-key -saved-evil-insert-state-map (kbd "C-j")))
+    (define-key evil-insert-state-map (kbd "C-h")
+      (lookup-key -saved-evil-insert-state-map (kbd "C-h")))
+    (define-key evil-insert-state-map (kbd "C-l")
+      (lookup-key -saved-evil-insert-state-map (kbd "C-l")))
+    (setq -evil-insert-state-map-overrided nil)))
+
+(define-minor-mode mode
+  "Seamlessly navigate between tmux pane and emacs window"
+  :init-value nil
+  :global t
+  :keymap (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "C-\\") #'omni-window-last)
+            (define-key map (kbd "C-k") #'omni-window-up)
+            (define-key map (kbd "C-j") #'omni-window-down)
+            (define-key map (kbd "C-h") #'omni-window-left)
+            (define-key map (kbd "C-l") #'omni-window-right)
+            map)
+  (cond
+   ((and mode map-evil-insert-state)
+    (override-evil-insert-state-map)
+    (add-hook 'after-init-hook #'override-evil-insert-state-map))
+   ((not mode)
+    (when (keymapp 'evil-insert-state-map)
+      (restore-evil-insert-state-map)))))
+
 ;; end of namespace
 )
 
@@ -109,44 +210,6 @@
     (let ((frame (window-frame win)))
       (select-frame-set-input-focus frame)
       (select-window win))))
-
-(defun tmux-pane-window-last ()
-  "Switch to the last window of Emacs or tmux"
-  (interactive)
-  (tmux-pane--windmove "last"  "tmux select-pane -l"))
-
-(defun tmux-pane-window-up ()
-  "Switch to the up window of Emacs or tmux"
-  (interactive)
-  (tmux-pane--windmove "up"  "tmux select-pane -U"))
-
-(defun tmux-pane-window-down ()
-  "Switch to the down window of Emacs or tmux"
-  (interactive)
-  (tmux-pane--windmove "down"  "tmux select-pane -D"))
-
-(defun tmux-pane-window-left ()
-  "Switch to the left window of Emacs or tmux"
-  (interactive)
-  (tmux-pane--windmove "left"  "tmux select-pane -L"))
-
-(defun tmux-pane-window-right ()
-  "Switch to the right window of Emacs or tmux"
-  (interactive)
-  (tmux-pane--windmove "right"  "tmux select-pane -R"))
-
-(define-minor-mode tmux-pane-mode
-  "Seamlessly navigate between tmux pane and emacs window"
-  :init-value nil
-  :global t
-  :keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-\\") #'tmux-pane-window-last)
-    (define-key map (kbd "C-k") #'tmux-pane-window-up)
-    (define-key map (kbd "C-j") #'tmux-pane-window-down)
-    (define-key map (kbd "C-h") #'tmux-pane-window-left)
-    (define-key map (kbd "C-l") #'tmux-pane-window-right)
-    map))
 
 (provide 'tmux-pane)
 ;;; tmux-pane.el ends here
