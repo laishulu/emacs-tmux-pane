@@ -19,16 +19,11 @@ The package is named as ~tmux-pane~.
 A global minor mode ~tmux-pane-mode~ (disabled by default) is provided.
 
 Default key map:
-
-~C-k~: Up
-
-~C-j~: Down
-
-~C-h~: Left
-
-~C-l~: Right
-
-~C-\~: Last
+- ~C-k~: Up
+- ~C-j~: Down
+- ~C-h~: Left
+- ~C-l~: Right
+- ~C-\~: Last
 
 For the default key map, the following codes should be added to =~/.tmux.conf=
 
@@ -54,31 +49,29 @@ bind -Tcopy-mode-vi C-\\ if-shell "$is_vim_emacs" "send-keys C-\\" "select-pane 
 
 ** Manipulate tmux side pane
 *** Commands
-~tmux-pane-open-vertical~ : Open a vertical tmux side pane at right
-
-~tmux-pane-open-horizontal~: Open a vertical tmux side pane at below
-
-~tmux-pane-close~: Close the lastest tmux side pane if possible
-
-~tmux-pane-rerun~: Rerun the latest command in the latest tmux pane
-
-~tmux-pane-toggle-vertical~: Open a vertical tmux side pane,
-or close the latest tmux pane (not necessarily to be the vertial pane).
-
-~tmux-pane-toggle-horizontal~: Open a horizontal tmux side pane,
-or close the latest tmux pane (not necessarily to be the horizontal pane).
+- ~tmux-pane-open-vertical~ : Open a vertical tmux side pane at right
+- ~tmux-pane-open-horizontal~: Open a vertical tmux side pane at below
+- ~tmux-pane-close~: Close the lastest tmux side pane if possible
+- ~tmux-pane-rerun~: Rerun the latest command in the latest tmux pane
+- ~tmux-pane-toggle-vertical~: Open a vertical tmux side pane, or close the
+  latest tmux pane (not necessarily to be the vertial pane).
+- ~tmux-pane-toggle-horizontal~: Open a horizontal tmux side pane, or close the
+  latest tmux pane (not necessarily to be the horizontal pane).
+- ~tmux-pane-omni-window-up~ : Navigate to the up window of Emacs or tmux.
+- ~tmux-pane-omni-window-down~ : Navigate to the down window of Emacs or tmux.
+- ~tmux-pane-omni-window-left~ : Navigate to the left window of Emacs or tmux.
+- ~tmux-pane-omni-window-right~ : Navigate to the right window of Emacs or tmux.
+- ~tmux-pane-omni-window-last~ : Navigate to the last window of Emacs or tmux.
 
 *** Variables
 The following two variable can be customized
 
-~tmux-pane-vertical-percent~ (Default: 25): Width percentage of the vertical
-side pane to the whole tmux window
-
-~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the horizontal
-side pane to the whole tmux window
-
-~tmux-pane-map-evil-insert-state~ (Default: t): Map keybindings in evil insert
-state to enable window navigation.
+- ~tmux-pane-vertical-percent~ (Default: 25): Width percentage of the vertical
+  side pane to the whole tmux window
+- ~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the
+  horizontal side pane to the whole tmux window
+- ~tmux-pane-map-evil-insert-state~ (Default: t): Map keybindings in evil insert
+  state to enable window navigation.
 
 *  Example configuration for [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
 #+BEGIN_SRC lisp

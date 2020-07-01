@@ -33,6 +33,7 @@
 (eval-when-compile (require 'names))
 (require 'subr-x)
 
+;;;###autoload
 (define-namespace tmux-pane-
 
 (defcustom vertical-percent 25
@@ -103,26 +104,31 @@
       (close)
 (open-horizontal)))
 
+:autoload
 (defun omni-window-last ()
   "Switch to the last window of Emacs or tmux"
   (interactive)
   (-windmove "last"  "tmux select-pane -l"))
 
+:autoload
 (defun omni-window-up ()
   "Switch to the up window of Emacs or tmux"
   (interactive)
   (-windmove "up"  "tmux select-pane -U"))
 
+:autoload
 (defun omni-window-down ()
   "Switch to the down window of Emacs or tmux"
   (interactive)
   (-windmove "down"  "tmux select-pane -D"))
 
+:autoload
 (defun omni-window-left ()
   "Switch to the left window of Emacs or tmux"
   (interactive)
   (-windmove "left"  "tmux select-pane -L"))
 
+:autoload
 (defun omni-window-right ()
   "Switch to the right window of Emacs or tmux"
   (interactive)
@@ -138,6 +144,7 @@
 (defvar -evil-insert-state-map-overrided nil
   "Already overrided `evil-insert-state-map'")
 
+:autoload
 (defun override-evil-insert-state-map ()
   "Override `evil-insert-state-map' after saving original bindings."
   (unless (and -evil-insert-state-map-overrided
@@ -164,6 +171,7 @@
 
     (setq -evil-insert-state-map-overrided t)))
 
+:autoload
 (defun restore-evil-insert-state-map ()
   "Restore original `evil-insert-state-map'."
   (when (and -evil-insert-state-map-overrided
@@ -180,6 +188,7 @@
       (lookup-key -saved-evil-insert-state-map (kbd "C-l")))
     (setq -evil-insert-state-map-overrided nil)))
 
+:autoload
 (define-minor-mode mode
   "Seamlessly navigate between tmux pane and emacs window"
   :init-value nil
