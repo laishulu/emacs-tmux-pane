@@ -110,25 +110,43 @@
       (select-frame-set-input-focus frame)
       (select-window win))))
 
-(defvar tmux-pane-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-\\")
-      (lambda () (interactive) (tmux-pane--windmove "last"  "tmux select-pane -l")))
-    (define-key map (kbd "C-k")
-      (lambda () (interactive) (tmux-pane--windmove "up"  "tmux select-pane -U")))
-    (define-key map (kbd "C-j")
-      (lambda () (interactive) (tmux-pane--windmove "down"  "tmux select-pane -D")))
-    (define-key map (kbd "C-h")
-      (lambda () (interactive) (tmux-pane--windmove "left" "tmux select-pane -L")))
-    (define-key map (kbd "C-l")
-      (lambda () (interactive) (tmux-pane--windmove "right" "tmux select-pane -R")))
-    map))
+(defun tmux-pane-window-last ()
+  "Switch to the last window of Emacs or tmux"
+  (interactive)
+  (tmux-pane--windmove "last"  "tmux select-pane -l"))
+
+(defun tmux-pane-window-up ()
+  "Switch to the up window of Emacs or tmux"
+  (interactive)
+  (tmux-pane--windmove "up"  "tmux select-pane -U"))
+
+(defun tmux-pane-window-down ()
+  "Switch to the down window of Emacs or tmux"
+  (interactive)
+  (tmux-pane--windmove "down"  "tmux select-pane -D"))
+
+(defun tmux-pane-window-left ()
+  "Switch to the left window of Emacs or tmux"
+  (interactive)
+  (tmux-pane--windmove "left"  "tmux select-pane -L"))
+
+(defun tmux-pane-window-right ()
+  "Switch to the right window of Emacs or tmux"
+  (interactive)
+  (tmux-pane--windmove "right"  "tmux select-pane -R"))
 
 (define-minor-mode tmux-pane-mode
   "Seamlessly navigate between tmux pane and emacs window"
   :init-value nil
   :global t
-  :keymap 'tmux-pane-mode-map)
+  :keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-\\") #'tmux-pane-window-last)
+    (define-key map (kbd "C-k") #'tmux-pane-window-up)
+    (define-key map (kbd "C-j") #'tmux-pane-window-down)
+    (define-key map (kbd "C-h") #'tmux-pane-window-left)
+    (define-key map (kbd "C-l") #'tmux-pane-window-right)
+    map))
 
 (provide 'tmux-pane)
 ;;; tmux-pane.el ends here
