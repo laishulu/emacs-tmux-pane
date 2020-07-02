@@ -74,7 +74,7 @@ The following two variable can be customized
 *** Hooks
 - ~tmux-pane-before-leave-hook~ (Default: 25): Hook to run before leaving emacs
   to tmux.
-- ~tmux-pane-before-leave-hook~ (Default: 25): Hook to run after leaving emacs
+- ~tmux-pane-after-leave-hook~ (Default: 25): Hook to run after leaving emacs
   to tmux.
 
 *  Example configuration for [[https://github.com/hlissner/doom-emacs][Doom Emacs]]
