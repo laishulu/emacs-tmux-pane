@@ -51,10 +51,10 @@ bind -Tcopy-mode-vi C-\\ if-shell "$is_vim_emacs" "send-keys C-\\" "select-pane 
 *** Commands
 - ~tmux-pane-open-vertical~ : Open a vertical tmux side pane at right
 - ~tmux-pane-open-horizontal~: Open a vertical tmux side pane at below
-- ~tmux-pane-close~: Close the lastest tmux side pane if possible
+- ~tmux-pane-close~: Close the latest tmux side pane if possible
 - ~tmux-pane-rerun~: Rerun the latest command in the latest tmux pane
 - ~tmux-pane-toggle-vertical~: Open a vertical tmux side pane, or close the
-  latest tmux pane (not necessarily to be the vertial pane).
+  latest tmux pane (not necessarily to be the vertical pane).
 - ~tmux-pane-toggle-horizontal~: Open a horizontal tmux side pane, or close the
   latest tmux pane (not necessarily to be the horizontal pane).
 - ~tmux-pane-omni-window-up~ : Navigate to the up window of Emacs or tmux.
