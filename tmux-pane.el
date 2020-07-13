@@ -159,6 +159,9 @@
      ,tmux-pane--override-keymap))
   "Map alist for override.")
 
+(defvar -override-map-alist-order 0
+  "Order of map alist in `emulation-mode-map-alists'.")
+
 :autoload
 (define-minor-mode mode
   "Seamlessly navigate between tmux pane and emacs window."
@@ -169,7 +172,7 @@
     (add-to-ordered-list
      'emulation-mode-map-alists
      'tmux-pane--override-map-alist
-     1)
+     -override-map-alist-order)
     (setq -override-map-enable t))
    ((not mode)
     (setq -override-map-enable nil))))
