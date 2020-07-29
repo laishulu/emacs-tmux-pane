@@ -52,6 +52,11 @@
 (defvar after-leave-hook nil
   "Hook to run after leaving emacs to tmux.")
 
+(defmacro -ensure-dir (&rest body)
+  "Ensure BODY runs in home directory."
+  `(let ((default-directory "~"))
+     ,@body))
+
 :autoload
 (defun -windmove(dir tmux-cmd)
   "Move focus to window according to DIR and TMUX-CMD."
@@ -60,33 +65,36 @@
       nil                       ; Moving within emacs
     ;; At edges, send command to tmux
     (run-hooks 'tmux-pane-before-leave-hook)
-    (shell-command tmux-cmd)
+    (-ensure-dir (shell-command tmux-cmd))
     (run-hooks 'tmux-pane-after-leave-hook)))
 
 :autoload
 (defun open-vertical ()
   "Open a vertical pane."
   (interactive)
-  (shell-command (format "tmux split-window -h -p %s" vertical-percent)))
+  (-ensure-dir
+   (shell-command (format "tmux split-window -h -p %s" vertical-percent))))
 
 :autoload
 (defun open-horizontal ()
   "Open a horizontal pane."
   (interactive)
-  (shell-command (format "tmux split-window -v -p %s" horizontal-percent)))
+  (-ensure-dir
+   (shell-command (format "tmux split-window -v -p %s" horizontal-percent))))
 
 :autoload
 (defun close ()
   "Close last pane."
   (interactive)
-  (shell-command "tmux kill-pane -t {last}"))
+  (-ensure-dir (shell-command "tmux kill-pane -t {last}"))
 
 :autoload
 (defun rerun ()
   "Rerun command in the last pane."
   (interactive)
-  (shell-command "tmux send-keys -t {last} C-c")
-  (shell-command "tmux send-keys -t {last} Up Enter"))
+  (-ensure-dir 
+   (shell-command "tmux send-keys -t {last} C-c")
+   (shell-command "tmux send-keys -t {last} Up Enter")))
 
 :autoload
 (defun toggle-vertical()
@@ -95,7 +103,9 @@
   ;; have more than one pane
   (if (< 1 (length
             (split-string
-             (string-trim (shell-command-to-string "tmux list-panes")) "\n")))
+             (string-trim
+              (-ensure-dir
+               (shell-command-to-string "tmux list-panes")) "\n"))))
       (close)
     (open-vertical)))
 
@@ -106,7 +116,9 @@
   ;; have more than one pane
   (if (< 1 (length
             (split-string
-             (string-trim (shell-command-to-string "tmux list-panes")) "\n")))
+             (string-trim
+              (-ensure-dir 
+               (shell-command-to-string "tmux list-panes")) "\n"))))
       (close)
 (open-horizontal)))
 
