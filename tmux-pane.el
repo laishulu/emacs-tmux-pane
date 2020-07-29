@@ -86,7 +86,7 @@
 (defun close ()
   "Close last pane."
   (interactive)
-  (-ensure-dir (shell-command "tmux kill-pane -t {last}"))
+  (-ensure-dir (shell-command "tmux kill-pane -t {last}")))
 
 :autoload
 (defun rerun ()
