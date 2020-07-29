@@ -58,14 +58,14 @@
      ,@body))
 
 :autoload
-(defun -windmove(dir tmux-cmd)
+(defun -windmove(dir flag)
   "Move focus to window according to DIR and TMUX-CMD."
   (interactive)
   (if (ignore-errors (funcall (intern (concat "windmove-" dir))))
       nil                       ; Moving within emacs
     ;; At edges, send command to tmux
     (run-hooks 'tmux-pane-before-leave-hook)
-    (-ensure-dir (shell-command tmux-cmd))
+    (-ensure-dir (call-process "tmux" nil nil nil "select-pane" flag))
     (run-hooks 'tmux-pane-after-leave-hook)))
 
 :autoload
@@ -73,28 +73,31 @@
   "Open a vertical pane."
   (interactive)
   (-ensure-dir
-   (shell-command (format "tmux split-window -h -p %s" vertical-percent))))
+   (call-process "tmux" nil nil nil
+                 "split-window" "-h" "-p" (format "%s" vertical-percent))))
 
 :autoload
 (defun open-horizontal ()
   "Open a horizontal pane."
   (interactive)
   (-ensure-dir
-   (shell-command (format "tmux split-window -v -p %s" horizontal-percent))))
+   (call-process "tmux" nil nil nil
+                 "split-window" "-v" "-p" (format "%s" vertical-percent))))
 
 :autoload
 (defun close ()
   "Close last pane."
   (interactive)
-  (-ensure-dir (shell-command "tmux kill-pane -t {last}")))
+  (-ensure-dir
+   (call-process "tmux" nil nil nil "kill-pane" "-t" "{last}")))
 
 :autoload
 (defun rerun ()
   "Rerun command in the last pane."
   (interactive)
   (-ensure-dir 
-   (shell-command "tmux send-keys -t {last} C-c")
-   (shell-command "tmux send-keys -t {last} Up Enter")))
+   (call-process "tmux" nil nil nil "send-keys" "-t" "{last}" "C-c")
+   (call-process "tmux" nil nil nil "send-keys" "-t" "{last}" "Up" "Enter")))
 
 :autoload
 (defun toggle-vertical()
@@ -126,31 +129,31 @@
 (defun omni-window-last ()
   "Switch to the last window of Emacs or tmux."
   (interactive)
-  (-windmove "last"  "tmux select-pane -l"))
+  (-windmove "last" "-l"))
 
 :autoload
 (defun omni-window-up ()
   "Switch to the up window of Emacs or tmux."
   (interactive)
-  (-windmove "up"  "tmux select-pane -U"))
+  (-windmove "up" "-U"))
 
 :autoload
 (defun omni-window-down ()
   "Switch to the down window of Emacs or tmux."
   (interactive)
-  (-windmove "down"  "tmux select-pane -D"))
+  (-windmove "down" "-D"))
 
 :autoload
 (defun omni-window-left ()
   "Switch to the left window of Emacs or tmux."
   (interactive)
-  (-windmove "left"  "tmux select-pane -L"))
+  (-windmove "left" "-L"))
 
 :autoload
 (defun omni-window-right ()
   "Switch to the right window of Emacs or tmux."
   (interactive)
-  (-windmove "right"  "tmux select-pane -R"))
+  (-windmove "right" "-R"))
 
 (defvar -override-map-enable nil
   "Enabe the override keymap.")
