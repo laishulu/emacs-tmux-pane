@@ -197,8 +197,7 @@
      'emulation-mode-map-alists
      'tmux-pane--override-map-alist
      -override-map-alist-order)
-    (when (in-tmux-p)
-      (setq -override-map-enable t)))
+    (setq -override-map-enable t))
    ((not mode)
     (setq -override-map-enable nil))))
 
