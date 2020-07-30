@@ -177,6 +177,15 @@
 (defvar -override-map-alist-order 0
   "Order of map alist in `emulation-mode-map-alists'.")
 
+(defun in-tmux-p()
+  "Predicate on Emacs run in tmux."
+  (string=
+   "Emacs"
+   (string-trim
+    (-ensure-dir
+     (shell-command-to-string
+      "tmux display-message -p '#{pane_current_command}'")) "\n")))
+
 :autoload
 (define-minor-mode mode
   "Seamlessly navigate between tmux pane and emacs window."
@@ -188,7 +197,8 @@
      'emulation-mode-map-alists
      'tmux-pane--override-map-alist
      -override-map-alist-order)
-    (setq -override-map-enable t))
+    (when (in-tmux-p)
+      (setq -override-map-enable t)))
    ((not mode)
     (setq -override-map-enable nil))))
 
