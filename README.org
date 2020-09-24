@@ -47,6 +47,13 @@ bind -Tcopy-mode-vi 'C-l' if-shell "$is_vim_emacs" "send-keys C-l" "select-pane 
 bind -Tcopy-mode-vi 'C-\' if-shell "$is_vim_emacs" "send-keys C-\\\\" "select-pane -l"
 #+end_src
 
+*** Using [[https://github.com/tmux-plugins/tpm\]][TPM]]
+Add the following to your =~/.tmux.conf=
+#+BEGIN_SRC tmux
+set -g @plugin 'laishulu/emacs-tmux-pane'
+run '~/.tmux/plugins/tpm/tpm'
+#+END_SRC
+
 ** Manipulate tmux side pane
 *** Commands
 - ~tmux-pane-open-vertical~ : Open a vertical tmux side pane at right
