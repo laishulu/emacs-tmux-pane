@@ -11,11 +11,20 @@ this package. Tmux panes created in any approach are supported.
 #+CAPTION: Tmux pane integration
 [[./screenshots/tmux-pane.png]]
 
+* Install
+Just install ~tmux-pane~ from ~melpa~.
+
+* Configuration
+If you are using [[https://github.com/tmux-plugins/tpm][TPM]], add the following
+codes to your =~/.tmux.conf=
+#+BEGIN_SRC tmux
+set -g @plugin 'laishulu/emacs-tmux-pane'
+#+END_SRC
+
+Without TPM, you can manually copy the content of file =tmux-pane.tmux= to your
+file =~/.tmux.conf=.
+
 * Usage
-The package is named as ~tmux-pane~.
-
-** Seamlessly navigate between emacs window and tmux pane
-
 A global minor mode ~tmux-pane-mode~ (disabled by default) is provided.
 
 Default key map:
@@ -25,37 +34,7 @@ Default key map:
 - ~C-l~: Right
 - ~C-\~: Last
 
-For the default key map, the following codes should be added to =~/.tmux.conf=
-
-#+begin_src tmux
-# Smart pane switching with awareness of vim splits
-is_vim_emacs='echo "#{pane_current_command}" | \
-    grep -iqE "((^|\/)g?(view|n?vim?x?)(diff)?$)|emacs"'
-
-# enable in root key table
-bind -n 'C-h' if-shell "$is_vim_emacs" "send-keys C-h" "select-pane -L"
-bind -n 'C-j' if-shell "$is_vim_emacs" "send-keys C-j" "select-pane -D"
-bind -n 'C-k' if-shell "$is_vim_emacs" "send-keys C-k" "select-pane -U"
-bind -n 'C-l' if-shell "$is_vim_emacs" "send-keys C-l" "select-pane -R"
-bind -n 'C-\' if-shell "$is_vim_emacs" "send-keys C-\\\\" "select-pane -l"
-
-# enable in copy mode key table
-bind -Tcopy-mode-vi 'C-h' if-shell "$is_vim_emacs" "send-keys C-h" "select-pane -L"
-bind -Tcopy-mode-vi 'C-j' if-shell "$is_vim_emacs" "send-keys C-j" "select-pane -D"
-bind -Tcopy-mode-vi 'C-k' if-shell "$is_vim_emacs" "send-keys C-k" "select-pane -U"
-bind -Tcopy-mode-vi 'C-l' if-shell "$is_vim_emacs" "send-keys C-l" "select-pane -R"
-bind -Tcopy-mode-vi 'C-\' if-shell "$is_vim_emacs" "send-keys C-\\\\" "select-pane -l"
-#+end_src
-
-*** Using [[https://github.com/tmux-plugins/tpm\]][TPM]]
-Add the following to your =~/.tmux.conf=
-#+BEGIN_SRC tmux
-set -g @plugin 'laishulu/emacs-tmux-pane'
-run '~/.tmux/plugins/tpm/tpm'
-#+END_SRC
-
-** Manipulate tmux side pane
-*** Commands
+** Commands
 - ~tmux-pane-open-vertical~ : Open a vertical tmux side pane at right
 - ~tmux-pane-open-horizontal~: Open a vertical tmux side pane at below
 - ~tmux-pane-close~: Close the latest tmux side pane if possible
@@ -70,7 +49,7 @@ run '~/.tmux/plugins/tpm/tpm'
 - ~tmux-pane-omni-window-right~ : Navigate to the right window of Emacs or tmux.
 - ~tmux-pane-omni-window-last~ : Navigate to the last window of Emacs or tmux.
 
-*** Variables
+** Variables
 The following two variable can be customized
 
 - ~tmux-pane-vertical-percent~ (Default: 25): Width percentage of the vertical
@@ -78,7 +57,7 @@ The following two variable can be customized
 - ~tmux-pane-vertical-percent~ (Default: 25): Height percentage of the
   horizontal side pane to the whole tmux window
 
-*** Hooks
+** Hooks
 - ~tmux-pane-before-leave-hook~ (Default: 25): Hook to run before leaving emacs
   to tmux.
 - ~tmux-pane-after-leave-hook~ (Default: 25): Hook to run after leaving emacs
