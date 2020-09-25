@@ -14,7 +14,7 @@ this package. Tmux panes created in any approach are supported.
 * Install
 Just install ~tmux-pane~ from ~melpa~.
 
-* Configuration
+* Tmux configuration
 If you are using [[https://github.com/tmux-plugins/tpm][TPM]], add the following
 codes to your =~/.tmux.conf=
 #+BEGIN_SRC tmux
