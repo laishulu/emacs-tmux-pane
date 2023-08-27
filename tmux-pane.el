@@ -27,182 +27,172 @@
 
 ;;; Code:
 
-;; `define-namespace' is autoloaded, so there's no need to require
-;; `names'. However, requiring it here means it will also work for
-;; people who don't install through package.el.
-(eval-when-compile (require 'names))
 (require 'subr-x)
 
-;;;###autoload
-(define-namespace tmux-pane-
-
-(defcustom vertical-percent 25
+(defcustom tmux-pane-vertical-percent 25
   "Horizontal percent of the vertical pane."
   :type 'integer
   :group 'tmux-pane)
 
-(defcustom horizontal-percent 25
+(defcustom tmux-pane-horizontal-percent 25
   "Horizontal percent of the horizontal pane."
   :type 'integer
   :group 'tmux-pane)
 
-(defvar before-leave-hook nil
+(defvar tmux-pane-before-leave-hook nil
   "Hook to run before leaving emacs to tmux.")
 
-(defvar after-leave-hook nil
+(defvar tmux-pane-after-leave-hook nil
   "Hook to run after leaving emacs to tmux.")
 
-(defmacro -ensure-dir (&rest body)
+(defmacro tmux-pane--ensure-dir (&rest body)
   "Ensure BODY runs in home directory."
   `(let ((default-directory "~"))
      ,@body))
 
 :autoload
-(defun -windmove(dir flag)
+(defun tmux-pane--windmove(dir flag)
   "Move focus to window according to DIR and TMUX-CMD."
   (interactive)
   (if (ignore-errors (funcall (intern (concat "windmove-" dir))))
       nil                       ; Moving within emacs
     ;; At edges, send command to tmux
     (run-hooks 'tmux-pane-before-leave-hook)
-    (-ensure-dir (call-process "tmux" nil nil nil "select-pane" flag))
+    (tmux-pane--ensure-dir (call-process "tmux" nil nil nil "select-pane" flag))
     (run-hooks 'tmux-pane-after-leave-hook)))
 
 :autoload
-(defun open-vertical ()
+(defun tmux-pane-open-vertical ()
   "Open a vertical pane."
   (interactive)
-  (-ensure-dir
+  (tmux-pane--ensure-dir
    (call-process "tmux" nil nil nil
-                 "split-window" "-h" "-p" (format "%s" vertical-percent))))
+                 "split-window" "-h" "-p" (format "%s" tmux-pane-vertical-percent))))
 
 :autoload
-(defun open-horizontal ()
+(defun tmux-pane-open-horizontal ()
   "Open a horizontal pane."
   (interactive)
-  (-ensure-dir
+  (tmux-pane--ensure-dir
    (call-process "tmux" nil nil nil
-                 "split-window" "-v" "-p" (format "%s" vertical-percent))))
+                 "split-window" "-v" "-p" (format "%s" tmux-pane-vertical-percent))))
 
 :autoload
-(defun close ()
+(defun tmux-pane-close ()
   "Close last pane."
   (interactive)
-  (-ensure-dir
+  (tmux-pane--ensure-dir
    (call-process "tmux" nil nil nil "kill-pane" "-t" "{last}")))
 
 :autoload
-(defun rerun ()
+(defun tmux-pane-rerun ()
   "Rerun command in the last pane."
   (interactive)
-  (-ensure-dir 
+  (tmux-pane--ensure-dir
    (call-process "tmux" nil nil nil "send-keys" "-t" "{last}" "C-c")
    (call-process "tmux" nil nil nil "send-keys" "-t" "{last}" "Up" "Enter")))
 
 :autoload
-(defun toggle-vertical()
+(defun tmux-pane-toggle-vertical()
   "Toggle vertical pane."
   (interactive)
   ;; have more than one pane
   (if (< 1 (length
             (split-string
              (string-trim
-              (-ensure-dir
+              (tmux-pane--ensure-dir
                (shell-command-to-string "tmux list-panes")) "\n"))))
-      (close)
-    (open-vertical)))
+      (tmux-pane-close)
+    (tmux-pane-open-vertical)))
 
 :autoload
-(defun toggle-horizontal()
+(defun tmux-pane-toggle-horizontal()
   "Toggle horizontal pane."
   (interactive)
   ;; have more than one pane
   (if (< 1 (length
             (split-string
              (string-trim
-              (-ensure-dir 
+              (tmux-pane--ensure-dir
                (shell-command-to-string "tmux list-panes")) "\n"))))
-      (close)
-(open-horizontal)))
+      (tmux-pane-close)))
+(tmux-pane-open-horizontal)
 
 :autoload
-(defun omni-window-last ()
+(defun tmux-pane-omni-window-last ()
   "Switch to the last window of Emacs or tmux."
   (interactive)
-  (-windmove "last" "-l"))
+  (tmux-pane--windmove "last" "-l"))
 
 :autoload
-(defun omni-window-up ()
+(defun tmux-pane-omni-window-up ()
   "Switch to the up window of Emacs or tmux."
   (interactive)
-  (-windmove "up" "-U"))
+  (tmux-pane--windmove "up" "-U"))
 
 :autoload
-(defun omni-window-down ()
+(defun tmux-pane-omni-window-down ()
   "Switch to the down window of Emacs or tmux."
   (interactive)
-  (-windmove "down" "-D"))
+  (tmux-pane--windmove "down" "-D"))
 
 :autoload
-(defun omni-window-left ()
+(defun tmux-pane-omni-window-left ()
   "Switch to the left window of Emacs or tmux."
   (interactive)
-  (-windmove "left" "-L"))
+  (tmux-pane--windmove "left" "-L"))
 
 :autoload
-(defun omni-window-right ()
+(defun tmux-pane-omni-window-right ()
   "Switch to the right window of Emacs or tmux."
   (interactive)
-  (-windmove "right" "-R"))
+  (tmux-pane--windmove "right" "-R"))
 
-(defvar -override-map-enable nil
+(defvar tmux-pane--override-map-enable nil
   "Enabe the override keymap.")
 
-(defvar -override-keymap
+(defvar tmux-pane--override-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-\\") #'omni-window-last)
-    (define-key map (kbd "C-k") #'omni-window-up)
-    (define-key map (kbd "C-j") #'omni-window-down)
-    (define-key map (kbd "C-h") #'omni-window-left)
-    (define-key map (kbd "C-l") #'omni-window-right)
+    (define-key map (kbd "C-\\") #'tmux-pane-omni-window-last)
+    (define-key map (kbd "C-k") #'tmux-pane-omni-window-up)
+    (define-key map (kbd "C-j") #'tmux-pane-omni-window-down)
+    (define-key map (kbd "C-h") #'tmux-pane-omni-window-left)
+    (define-key map (kbd "C-l") #'tmux-pane-omni-window-right)
     map)
   "keymap overriding existing ones.")
 
-(defvar -override-map-alist
+(defvar tmux-pane--override-map-alist
   `((tmux-pane--override-map-enable
      .
      ,tmux-pane--override-keymap))
   "Map alist for override.")
 
-(defvar -override-map-alist-order 0
+(defvar tmux-pane--override-map-alist-order 0
   "Order of map alist in `emulation-mode-map-alists'.")
 
-(defun in-tmux-p()
+(defun tmux-pane-in-tmux-p ()
   "Predicate on Emacs run in tmux."
   (string=
    "Emacs"
    (string-trim
-    (-ensure-dir
+    (tmux-pane--ensure-dir
      (shell-command-to-string
       "tmux display-message -p '#{pane_current_command}'")) "\n")))
 
 :autoload
-(define-minor-mode mode
+(define-minor-mode tmux-pane-mode
   "Seamlessly navigate between tmux pane and emacs window."
   :init-value nil
   :global t
   (cond
-   (mode
+   (tmux-pane-mode
     (add-to-ordered-list
      'emulation-mode-map-alists
      'tmux-pane--override-map-alist
-     -override-map-alist-order)
-    (setq -override-map-enable t))
-   ((not mode)
-    (setq -override-map-enable nil))))
-
-;; end of namespace
-)
+     tmux-pane--override-map-alist-order)
+    (setq tmux-pane--override-map-enable t))
+   ((not tmux-pane-mode)
+    (setq tmux-pane--override-map-enable nil))))
 
 (defun windmove-last ()
   "Focus to the last Emacs window."
