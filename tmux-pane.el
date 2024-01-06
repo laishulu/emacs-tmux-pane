@@ -115,8 +115,8 @@
              (string-trim
               (tmux-pane--ensure-dir
                (shell-command-to-string "tmux list-panes")) "\n"))))
-      (tmux-pane-close)))
-(tmux-pane-open-horizontal)
+      (tmux-pane-close)
+    (tmux-pane-open-horizontal)))
 
 :autoload
 (defun tmux-pane-omni-window-last ()
